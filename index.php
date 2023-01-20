@@ -37,6 +37,9 @@ if(isset($_SESSION['loged']) && ($_SESSION['loged'] == true)){
         echo $_SESSION['blad'];
     }  
 ?>
-    
+
+<br><br>
+
+<a href="rejestracja.php">Rejestracja!</a>    
 </body>
 </html>
