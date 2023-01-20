@@ -1,0 +1,31 @@
+    body{
+        background-color: #EEEEEE;
+    }
+
+    form{
+        text-align: center;
+    }
+
+    .t1 {
+        text-align: center;
+    }
+
+    .butt{
+        background-color: #658864;
+        border-radius:5px;
+        font-size: 17px;
+        font-family: 'Source Sans Pro', sans-serif;
+        padding:6px 18px;
+        text-decoration: none;
+        color: black;
+        border: 2px solid black;
+    }
+
+    .butt:hover {
+        background-color: #;
+    }
+
+    .span{
+        color: red;
+        text-align: center;
+    }

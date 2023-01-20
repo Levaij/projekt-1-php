@@ -9,42 +9,85 @@ if(isset($_SESSION['loged']) && ($_SESSION['loged'] == true)){
 
 }
 
-$all_good = true;
-$login = $_POST['login'];
 
-// login
+require_once "connect.php";
 
-if ((strlen($login)<3) || (strlen($login)>15)){
+$connect = @new mysqli($host, $db_user, $db_password, $db_name);
 
-    $all_good = false;
-    $_SESSION['e_login']="Login musi posiadać od 3 do 15 zanków!";
+if ($connect->connect_errno!=0){
 
-}
-
-if (ctype_alnum($login)==false){
-
-    $all_good=false;
-    $_SESSION['e_login']="Login może zawierać znaki alfanumeryczne!";
+    echo "Error: ".$connect->connect_errno ." Opis: ".$connect->connect_error;
 
 }
+else{
 
-//email
+    $all_good = true;
+    $login = $_POST['login'];
 
-$email = $_POST['email'];
-$emailB = filter_var($email, FILTER_SANITIZE_EMAIL);
 
-if ((filter_var($emailB, FILTER_VALIDATE_EMAIL)==false) || ($emailB != $email)){
-    $all_good=false;
-    $_SESSION['e_email']="Podaj poprawny adres e-mail (bez znaków nie alfanumerycznych)!";
+    // login
+
+    if ((strlen($login)<3) || (strlen($login)>15)){
+
+        $all_good = false;
+        $_SESSION['e_login']="Login musi posiadać od 3 do 15 zanków!";
+
+    }
+
+    if (ctype_alnum($login)==false){
+
+        $all_good=false;
+        $_SESSION['e_login']="Login może zawierać znaki alfanumeryczne!";
+
+    }
+
+    //email
+
+    $email = $_POST['email'];
+    $emailB = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+    if ((filter_var($emailB, FILTER_VALIDATE_EMAIL)==false) || ($emailB != $email)){
+        $all_good=false;
+        $_SESSION['e_email']="Podaj poprawny adres e-mail (bez znaków nie alfanumerycznych)!";
+    }
+
+    //password
+
+    $password1 = $_POST['password1'];
+    $password2 = $_POST['password2'];
+
+    if ((strlen($password1)<3) || (strlen($password1)>20)){
+        $all_good=false;
+        $_SESSION['e_password1']="Haslo musi posiadać od 3 do 20 zanków!";
+    }
+
+    if ((strlen($password2)<3) || (strlen($password2)>20)){
+        $all_good=false;
+        $_SESSION['e_password2']="Haslo musi posiadać od 3 do 20 zanków!";
+    }
+
+    if ($password1 !== $password2){
+        $all_good=false;
+        $_SESSION['e_password2']="Halsa muszą być takie same!";
+    }
+
+
+    if ($all_good==true){
+
+        echo "gid gud";
+
+        $sql = "INSERT INTO `uzytkownicy`(`login`, `password`, `e-mail`) VALUES ('$login','$password2','$email')";
+
+        mysqli_query($connect, $sql);
+
+        header('Location: index.php');
+
+
+    }
+
+
+    
 }
-
-if ($all_good==true){
-
-    echo "gid gud";
-
-}
-
-
 ?>
 
 <!DOCTYPE html>
@@ -90,9 +133,30 @@ if ($all_good==true){
             <br>
         <p>Hasło</p>
         <input type="password" name="password1" />
+
+        <?php
+
+        if (isset($_SESSION['e_password1'])){
+            echo '<div class="error">'.$_SESSION['e_password1'].'</div>';
+            unset($_SESSION['e_password1']);
+        }
+
+        ?>
             <br>
         <p>Powtórz hasło</p>
         <input type="password" name="password2" />
+
+        <?php
+
+        if (isset($_SESSION['e_password2'])){
+            echo '<div class="error">'.$_SESSION['e_password2'].'</div>';
+            unset($_SESSION['e_password2']);
+        }
+
+        ?>
+
+        <br><br>
+
         <input type="submit" value="Zarejestrój" />
 
     </form>
